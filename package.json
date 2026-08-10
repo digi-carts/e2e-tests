@@ -1,0 +1,37 @@
+{
+  "name": "ecom-e2e",
+  "version": "1.0.0",
+  "description": "E2E test suite for dcart platform — Cucumber BDD + Selenium UI + Axios API",
+  "private": true,
+  "scripts": {
+    "test": "cucumber-js",
+    "test:api": "cucumber-js --tags @api",
+    "test:ui": "cucumber-js --tags @ui",
+    "test:smoke": "cucumber-js --tags @smoke",
+    "test:report": "cucumber-js --format json:reports/cucumber-report.json && node scripts/generate-report.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "jsonwebtoken": "^9.0.2",
+    "selenium-webdriver": "^4.23.0"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.1.0",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.14.2",
+    "@types/selenium-webdriver": "^4.1.26",
+    "multiple-cucumber-html-reporter": "^3.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "cucumber": {
+    "requireModule": ["ts-node/register"],
+    "require": ["step-definitions/**/*.ts"],
+    "format": [
+      "progress-bar",
+      "json:reports/cucumber-report.json",
+      "html:reports/cucumber-report.html"
+    ],
+    "forceExit": true
+  }
+}

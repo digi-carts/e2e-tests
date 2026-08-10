@@ -1,0 +1,149 @@
+name: E2E Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Cucumber tag filter (e.g. @smoke, @api, @ui)"
+        required: false
+        default: "@smoke"
+      target_url:
+        description: "Override API Gateway URL"
+        required: false
+        default: ""
+  schedule:
+    # Run smoke suite every day at 06:00 UTC
+    - cron: "0 6 * * *"
+  push:
+    branches: [main]
+
+env:
+  API_GATEWAY_URL: ${{ inputs.target_url || 'https://ecom-api-gateway-m6jmogmpra-ue.a.run.app' }}
+  PLATFORM_UI_URL: https://ecom-platform-ui-m6jmogmpra-ue.a.run.app
+  ADMIN_UI_URL: https://ecom-admin-ui-m6jmogmpra-ue.a.run.app
+  STOREFRONT_URL: https://ecom-storefront-m6jmogmpra-ue.a.run.app
+  HEADLESS: "true"
+  BROWSER: chrome
+
+jobs:
+  api-tests:
+    name: API Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run API tests
+        run: npm run test:api
+        env:
+          JWT_SECRET: ${{ secrets.E2E_JWT_SECRET }}
+          E2E_SUPERADMIN_EMAIL: ${{ secrets.E2E_SUPERADMIN_EMAIL }}
+          E2E_SUPERADMIN_PASSWORD: ${{ secrets.E2E_SUPERADMIN_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+
+      - name: Upload API test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-test-report
+          path: reports/
+
+  ui-tests:
+    name: UI Tests (Selenium)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Start ChromeDriver
+        run: chromedriver --port=9515 &
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run UI tests
+        run: npm run test:ui
+        env:
+          BROWSER: chrome
+          HEADLESS: "true"
+          E2E_SUPERADMIN_EMAIL: ${{ secrets.E2E_SUPERADMIN_EMAIL }}
+          E2E_SUPERADMIN_PASSWORD: ${{ secrets.E2E_SUPERADMIN_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+
+      - name: Upload UI screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-failure-screenshots
+          path: reports/screenshots/
+
+      - name: Upload UI test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-test-report
+          path: reports/
+
+  smoke:
+    name: Smoke Tests (API + UI)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Install ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+
+      - name: Start ChromeDriver
+        run: chromedriver --port=9515 &
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run smoke tests
+        run: npx cucumber-js --tags "${{ inputs.tags || '@smoke' }}"
+        env:
+          JWT_SECRET: ${{ secrets.E2E_JWT_SECRET }}
+          E2E_SUPERADMIN_EMAIL: ${{ secrets.E2E_SUPERADMIN_EMAIL }}
+          E2E_SUPERADMIN_PASSWORD: ${{ secrets.E2E_SUPERADMIN_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+
+      - name: Generate HTML report
+        if: always()
+        run: |
+          npm run test:report || true
+
+      - name: Upload smoke test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-test-report
+          path: reports/
