@@ -22,10 +22,11 @@
     "@types/selenium-webdriver": "^4.1.26",
     "multiple-cucumber-html-reporter": "^3.7.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.0",
     "typescript": "^5.4.5"
   },
   "cucumber": {
-    "requireModule": ["ts-node/register"],
+    "requireModule": ["tsx/cjs"],
     "require": ["step-definitions/**/*.ts"],
     "format": [
       "progress-bar",
