@@ -43,10 +43,11 @@ jobs:
 
       - name: Diagnose loader setup
         run: |
-          echo "=== Node version ===" && node --version
-          echo "=== tsx/cjs require ===" && node -e "require('tsx/cjs'); console.log('tsx/cjs OK')" 2>&1
-          echo "=== manually load api-steps ===" && node -e "require('tsx/cjs'); require('./step-definitions/api/api-steps'); console.log('api-steps OK')" 2>&1
-          echo "=== cucumber --dry-run ===" && node_modules/.bin/cucumber-js --tags @api --dry-run 2>&1 | head -20 || true
+          echo "=== Node/npm version ===" && node --version && npm --version
+          echo "=== tsx present ===" && ls node_modules/.bin/tsx && echo OK
+          echo "=== cucumber dry-run ===" 
+          node_modules/.bin/cucumber-js --tags @api --dry-run 2>&1 | head -30 || true
+        continue-on-error: true
 
       - name: Run API tests
         run: npm run test:api
