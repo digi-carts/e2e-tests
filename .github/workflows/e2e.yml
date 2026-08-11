@@ -128,7 +128,7 @@ jobs:
         run: npm install
 
       - name: Run smoke tests
-        run: NODE_OPTIONS='--require tsx/cjs' npx cucumber-js --tags "${{ inputs.tags || '@smoke' }}"
+        run: npm run test:smoke
         env:
           JWT_SECRET: ${{ secrets.E2E_JWT_SECRET }}
           E2E_SUPERADMIN_EMAIL: ${{ secrets.E2E_SUPERADMIN_EMAIL }}
