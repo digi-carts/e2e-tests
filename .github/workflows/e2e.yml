@@ -40,6 +40,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+
+      - name: Diagnose loader setup
+        run: |
+          echo "=== Node version ===" && node --version
+          echo "=== tsx binary ===" && ls node_modules/.bin/tsx 2>/dev/null && echo "FOUND" || echo "MISSING"
+          echo "=== tsx/cjs require ===" && node -e "require('tsx/cjs'); console.log('tsx/cjs OK')" 2>&1 || echo "FAILED"
+          echo "=== cucumber config ===" && node -e "console.log(JSON.stringify(require('./package.json').cucumber,null,2))"
+          echo "=== step-definitions glob ===" && ls step-definitions/**/*.ts 2>/dev/null || ls step-definitions/api/*.ts step-definitions/ui/*.ts 2>/dev/null
+
       - name: Run API tests
         run: npm run test:api
         env:
