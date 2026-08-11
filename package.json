@@ -4,11 +4,11 @@
   "description": "E2E test suite for dcart platform — Cucumber BDD + Selenium UI + Axios API",
   "private": true,
   "scripts": {
-    "test": "cross-env NODE_OPTIONS='--require tsx/cjs' cucumber-js",
-    "test:api": "cross-env NODE_OPTIONS='--require tsx/cjs' cucumber-js --tags @api",
-    "test:ui": "cross-env NODE_OPTIONS='--require tsx/cjs' cucumber-js --tags @ui",
-    "test:smoke": "cross-env NODE_OPTIONS='--require tsx/cjs' cucumber-js --tags @smoke",
-    "test:report": "cross-env NODE_OPTIONS='--require tsx/cjs' cucumber-js --format json:reports/cucumber-report.json && node scripts/generate-report.js"
+    "test": "cucumber-js",
+    "test:api": "cucumber-js --tags @api",
+    "test:ui": "cucumber-js --tags @ui",
+    "test:smoke": "cucumber-js --tags @smoke",
+    "test:report": "cucumber-js --format json:reports/cucumber-report.json && node scripts/generate-report.js"
   },
   "dependencies": {
     "axios": "^1.7.2",
@@ -20,14 +20,12 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.2",
     "@types/selenium-webdriver": "^4.1.26",
-    "cross-env": "^7.0.3",
     "multiple-cucumber-html-reporter": "^3.7.0",
-    "ts-node": "^10.9.2",
     "tsx": "^4.19.0",
     "typescript": "^5.4.5"
   },
   "cucumber": {
-    "require": ["step-definitions/**/*.ts"],
+    "require": ["tsx/cjs", "step-definitions/**/*.ts"],
     "format": [
       "progress-bar",
       "json:reports/cucumber-report.json",
