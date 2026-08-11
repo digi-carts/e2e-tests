@@ -1,0 +1,12 @@
+{
+  "default": {
+    "requireModule": ["tsx/cjs"],
+    "require": ["step-definitions/**/*.ts"],
+    "format": [
+      "progress-bar",
+      "json:reports/cucumber-report.json",
+      "html:reports/cucumber-report.html"
+    ],
+    "forceExit": true
+  }
+}
