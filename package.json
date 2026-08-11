@@ -26,8 +26,8 @@
     "typescript": "^5.4.5"
   },
   "cucumber": {
-    "requireModule": ["tsx/cjs"],
-    "require": ["step-definitions/**/*.ts"],
+    "loader": ["tsx"],
+    "import": ["step-definitions/**/*.ts"],
     "format": [
       "progress-bar",
       "json:reports/cucumber-report.json",
