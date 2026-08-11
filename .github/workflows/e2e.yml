@@ -38,7 +38,7 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run API tests
         run: npm run test:api
@@ -77,7 +77,7 @@ jobs:
         run: chromedriver --port=9515 &
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run UI tests
         run: npm run test:ui
@@ -125,7 +125,7 @@ jobs:
         run: chromedriver --port=9515 &
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run smoke tests
         run: npx cucumber-js --tags "${{ inputs.tags || '@smoke' }}"
