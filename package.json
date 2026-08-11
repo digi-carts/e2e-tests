@@ -27,7 +27,7 @@
   },
   "cucumber": {
     "loader": ["tsx"],
-    "import": ["step-definitions/**/*.ts"],
+    "require": ["step-definitions/**/*.ts"],
     "format": [
       "progress-bar",
       "json:reports/cucumber-report.json",
