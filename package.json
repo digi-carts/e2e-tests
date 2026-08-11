@@ -23,15 +23,5 @@
     "multiple-cucumber-html-reporter": "^3.7.0",
     "tsx": "^4.19.0",
     "typescript": "^5.4.5"
-  },
-  "cucumber": {
-    "requireModule": ["tsx/cjs"],
-    "require": ["step-definitions/**/*.ts"],
-    "format": [
-      "progress-bar",
-      "json:reports/cucumber-report.json",
-      "html:reports/cucumber-report.html"
-    ],
-    "forceExit": true
   }
 }
