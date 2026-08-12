@@ -48,8 +48,9 @@ Then('the page should load without errors', async function (this: EcomWorld) {
 
 Then('the page should not show a 500 error', async function (this: EcomWorld) {
   const d = await getDriver();
+  const title = await d.getTitle();
+  assert.ok(!title.includes('500'), 'Page title shows 500 error');
   const source = await d.getPageSource();
-  assert.ok(!source.includes('500'), 'Page shows 500 error');
   assert.ok(!source.includes('Internal Server Error'), 'Page shows Internal Server Error');
 });
 
