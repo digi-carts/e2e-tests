@@ -8,7 +8,7 @@ Feature: Platform UI Login
     Given I open the platform UI
 
   Scenario: Login page loads
-    Then the page title should contain "Platform"
+    Then the page title should contain "dcart"
     And I should see an email input field
     And I should see a password input field
     And I should see a login button
