@@ -1,4 +1,6 @@
-import { setWorldConstructor, World, IWorldOptions, After, Before } from '@cucumber/cucumber';
+import { setWorldConstructor, World, IWorldOptions, After, Before, setDefaultTimeout } from '@cucumber/cucumber';
+
+setDefaultTimeout(20_000);
 import { AxiosInstance } from 'axios';
 import { WebDriver } from 'selenium-webdriver';
 import { createApiClient } from './api-client';
