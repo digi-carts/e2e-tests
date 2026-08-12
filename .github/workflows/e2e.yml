@@ -80,6 +80,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Warm up Cloud Run services
+        run: |
+          curl -sf ${{ env.API_GATEWAY_URL }}/health || true
+          curl -sf ${{ env.PLATFORM_UI_URL }} -o /dev/null || true
+          curl -sf ${{ env.ADMIN_UI_URL }} -o /dev/null || true
+          curl -sf ${{ env.STOREFRONT_URL }} -o /dev/null || true
+          sleep 5
+
       - name: Run UI tests
         run: npm run test:ui
         env:
@@ -127,6 +135,14 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Warm up Cloud Run services
+        run: |
+          curl -sf ${{ env.API_GATEWAY_URL }}/health || true
+          curl -sf ${{ env.PLATFORM_UI_URL }} -o /dev/null || true
+          curl -sf ${{ env.ADMIN_UI_URL }} -o /dev/null || true
+          curl -sf ${{ env.STOREFRONT_URL }} -o /dev/null || true
+          sleep 5
 
       - name: Run smoke tests
         run: npm run test:smoke
