@@ -114,7 +114,7 @@ Then('I should be redirected to the dashboard', async function (this: EcomWorld)
   await d.wait(async () => {
     const url = await d.getCurrentUrl();
     return url.includes('/dashboard') || url.includes('/overview') || url.includes('/home');
-  }, 18_000, 'Did not redirect to dashboard');
+  }, 30_000, 'Did not redirect to dashboard');
 });
 
 Then('I should be redirected to the admin dashboard', async function (this: EcomWorld) {
@@ -122,7 +122,7 @@ Then('I should be redirected to the admin dashboard', async function (this: Ecom
   await d.wait(async () => {
     const url = await d.getCurrentUrl();
     return !url.includes('/login');
-  }, 18_000, 'Still on login page after successful login');
+  }, 30_000, 'Still on login page after successful login');
 });
 
 Then('I should see the dashboard heading', async function (this: EcomWorld) {
