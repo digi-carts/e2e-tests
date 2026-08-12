@@ -77,7 +77,7 @@ Then('I should see a password input field', async function (this: EcomWorld) {
 Then('I should see a login button', async function (this: EcomWorld) {
   const d = await getDriver();
   const btn = await d.wait(
-    until.elementLocated(By.css('button[type="submit"], button')),
+    until.elementLocated(By.css('button[type="submit"]')),
     18_000,
     'Login button not found'
   );
@@ -186,7 +186,7 @@ When('I enter the admin credentials', async function (this: EcomWorld) {
 
 When('I click the login button', async function (this: EcomWorld) {
   const d = await getDriver();
-  const btn = await d.wait(until.elementLocated(By.css('button[type="submit"], button')), 18_000);
+  const btn = await d.wait(until.elementLocated(By.css('button[type="submit"]')), 18_000);
   await btn.click();
   // Brief wait for navigation or error to settle
   await d.sleep(1500);
