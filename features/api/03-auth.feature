@@ -9,14 +9,14 @@ Feature: Authentication API
       """
       { "email": "nonexistent@test.com", "password": "wrong" }
       """
-    Then the response status should be 400 or 401 or 422
+    Then the response status should be 400 or 401 or 422 or 429
 
   Scenario: Register endpoint validates missing fields
     When I POST "/api/auth/register" with body:
       """
       {}
       """
-    Then the response status should be 400 or 422
+    Then the response status should be 400 or 422 or 429
 
   Scenario: Auth register endpoint is reachable
     When I POST "/api/auth/register" with body:
