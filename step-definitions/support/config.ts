@@ -21,10 +21,10 @@ function loadEnv() {
 loadEnv();
 
 export const config = {
-  apiGatewayUrl: process.env.API_GATEWAY_URL || 'https://ecom-api-gateway-m6jmogmpra-ue.a.run.app',
-  platformUiUrl: process.env.PLATFORM_UI_URL || 'https://ecom-platform-ui-m6jmogmpra-ue.a.run.app',
-  adminUiUrl:    process.env.ADMIN_UI_URL    || 'https://ecom-admin-ui-m6jmogmpra-ue.a.run.app',
-  storefrontUrl: process.env.STOREFRONT_URL  || 'https://ecom-storefront-m6jmogmpra-ue.a.run.app',
+  apiGatewayUrl: process.env.API_GATEWAY_URL || 'https://ecom-api-gateway-496160804659.us-east1.run.app',
+  platformUiUrl: process.env.PLATFORM_UI_URL || 'https://ecom-platform-ui-496160804659.us-east1.run.app',
+  adminUiUrl:    process.env.ADMIN_UI_URL    || 'https://ecom-admin-ui-496160804659.us-east1.run.app',
+  storefrontUrl: process.env.STOREFRONT_URL  || 'https://ecom-storefront-496160804659.us-east1.run.app/s/iyra',
   jwtSecret:     process.env.JWT_SECRET      || '',
   browser:       (process.env.BROWSER        || 'chrome') as 'chrome' | 'firefox' | 'edge',
   headless:      process.env.HEADLESS !== 'false',
