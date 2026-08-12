@@ -120,6 +120,14 @@ Then('the response status should be {int} or {int} or {int}', function (this: Ec
   );
 });
 
+Then('the response status should be {int} or {int} or {int} or {int}', function (this: EcomWorld, s1: number, s2: number, s3: number, s4: number) {
+  assert.ok(this.lastResponse, 'No response recorded');
+  assert.ok(
+    [s1, s2, s3, s4].includes(this.lastResponse.status),
+    `Expected ${s1}, ${s2}, ${s3}, or ${s4} but got ${this.lastResponse.status}`
+  );
+});
+
 Then('the response status should not be {int}', function (this: EcomWorld, unexpectedStatus: number) {
   assert.ok(this.lastResponse, 'No response recorded');
   assert.notEqual(
