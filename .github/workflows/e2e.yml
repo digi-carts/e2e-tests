@@ -18,10 +18,10 @@ on:
     branches: [main]
 
 env:
-  API_GATEWAY_URL: ${{ inputs.target_url || 'https://ecom-api-gateway-m6jmogmpra-ue.a.run.app' }}
-  PLATFORM_UI_URL: https://ecom-platform-ui-m6jmogmpra-ue.a.run.app
-  ADMIN_UI_URL: https://ecom-admin-ui-m6jmogmpra-ue.a.run.app
-  STOREFRONT_URL: https://ecom-storefront-m6jmogmpra-ue.a.run.app
+  API_GATEWAY_URL: ${{ inputs.target_url || 'https://ecom-api-gateway-496160804659.us-east1.run.app' }}
+  PLATFORM_UI_URL: https://ecom-platform-ui-496160804659.us-east1.run.app
+  ADMIN_UI_URL: https://ecom-admin-ui-496160804659.us-east1.run.app
+  STOREFRONT_URL: https://ecom-storefront-496160804659.us-east1.run.app/s/iyra
   HEADLESS: "true"
   BROWSER: chrome
 
