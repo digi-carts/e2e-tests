@@ -45,6 +45,7 @@ jobs:
         run: npm run test:api
         env:
           JWT_SECRET: ${{ secrets.E2E_JWT_SECRET }}
+          E2E_JWT_SECRET: ${{ secrets.E2E_JWT_SECRET }}
           E2E_SUPERADMIN_EMAIL: ${{ secrets.E2E_SUPERADMIN_EMAIL }}
           E2E_SUPERADMIN_PASSWORD: ${{ secrets.E2E_SUPERADMIN_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
@@ -148,6 +149,7 @@ jobs:
         run: npm run test:smoke
         env:
           JWT_SECRET: ${{ secrets.E2E_JWT_SECRET }}
+          E2E_JWT_SECRET: ${{ secrets.E2E_JWT_SECRET }}
           E2E_SUPERADMIN_EMAIL: ${{ secrets.E2E_SUPERADMIN_EMAIL }}
           E2E_SUPERADMIN_PASSWORD: ${{ secrets.E2E_SUPERADMIN_PASSWORD }}
           E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
