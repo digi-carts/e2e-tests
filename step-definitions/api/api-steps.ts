@@ -17,7 +17,7 @@ Given('I have a valid JWT token for role {string}', function (this: EcomWorld, r
     userId: `e2e-${role.toLowerCase()}-user`,
     email: `e2e-${role.toLowerCase()}@test.com`,
     role,
-    storeId: role === 'ADMIN' ? 'e2e-store-001' : undefined,
+    storeId: role === 'ADMIN' || role === 'MERCHANT' || role === 'merchant' ? 'e2e-store-001' : undefined,
   });
   this.token = token;
   this.api = createApiClient(token);

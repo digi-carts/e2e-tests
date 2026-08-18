@@ -20,26 +20,36 @@ function loadEnv() {
 
 loadEnv();
 
+function env(name: string, fallback = ''): string {
+  return (process.env[name] ?? fallback).trim();
+}
+
 export const config = {
-  apiGatewayUrl: process.env.API_GATEWAY_URL || 'https://ecom-api-gateway-496160804659.us-east1.run.app',
-  platformUiUrl: process.env.PLATFORM_UI_URL || 'https://ecom-platform-ui-496160804659.us-east1.run.app',
-  adminUiUrl:    process.env.ADMIN_UI_URL    || 'https://ecom-admin-ui-496160804659.us-east1.run.app',
-  storefrontUrl: process.env.STOREFRONT_URL  || 'https://ecom-storefront-496160804659.us-east1.run.app/s/iyra',
-  jwtSecret:     process.env.JWT_SECRET      || '',
-  browser:       (process.env.BROWSER        || 'chrome') as 'chrome' | 'firefox' | 'edge',
-  headless:      process.env.HEADLESS !== 'false',
+  get apiGatewayUrl() { return env('API_GATEWAY_URL', 'https://ecom-api-gateway-496160804659.us-east1.run.app'); },
+  get platformUiUrl() { return env('PLATFORM_UI_URL', 'https://ecom-platform-ui-496160804659.us-east1.run.app'); },
+  get adminUiUrl() { return env('ADMIN_UI_URL', 'https://ecom-admin-ui-496160804659.us-east1.run.app'); },
+  get storefrontUrl() { return env('STOREFRONT_URL', 'https://ecom-storefront-496160804659.us-east1.run.app/s/iyra'); },
+  get jwtSecret() { return env('JWT_SECRET') || env('E2E_JWT_SECRET'); },
+  get browser() { return (env('BROWSER', 'chrome') || 'chrome') as 'chrome' | 'firefox' | 'edge'; },
+  get headless() { return process.env.HEADLESS !== 'false'; },
   credentials: {
-    superadmin: {
-      email:    process.env.E2E_SUPERADMIN_EMAIL    || 'superadmin@ecom.app',
-      password: process.env.E2E_SUPERADMIN_PASSWORD || '',
+    get superadmin() {
+      return {
+        email: env('E2E_SUPERADMIN_EMAIL', 'superadmin@ecom.app'),
+        password: env('E2E_SUPERADMIN_PASSWORD'),
+      };
     },
-    admin: {
-      email:    process.env.E2E_ADMIN_EMAIL    || '',
-      password: process.env.E2E_ADMIN_PASSWORD || '',
+    get admin() {
+      return {
+        email: env('E2E_ADMIN_EMAIL'),
+        password: env('E2E_ADMIN_PASSWORD'),
+      };
     },
-    user: {
-      email:    process.env.E2E_USER_EMAIL    || '',
-      password: process.env.E2E_USER_PASSWORD || '',
+    get user() {
+      return {
+        email: env('E2E_USER_EMAIL'),
+        password: env('E2E_USER_PASSWORD'),
+      };
     },
   },
 };
