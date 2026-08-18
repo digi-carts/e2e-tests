@@ -1,0 +1,10 @@
+---
+description: File map and knowledge graph for e2e-tests — load so the agent can jump to the right files
+alwaysApply: true
+---
+
+# e2e-tests — AI file map
+
+Start with `AGENTS.md`, then `docs/ai/KNOWLEDGE_GRAPH.md`. Do not scan the whole repo when a task is listed there.
+
+Config and secrets mapping: `step-definitions/support/config.ts`. Do not hardcode production URLs in steps.
