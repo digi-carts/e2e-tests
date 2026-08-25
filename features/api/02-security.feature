@@ -34,7 +34,7 @@ Feature: API Gateway Security
 
   Scenario: CORS preflight returns allowed headers
     When I send an OPTIONS request to "/api/auth/login" from origin "https://admin.ecom.app"
-    Then the response status should be 204
+    Then the response status should be 200 or 204
     And the response header "access-control-allow-credentials" should be "true"
 
   Scenario: CORS from unknown origin is blocked

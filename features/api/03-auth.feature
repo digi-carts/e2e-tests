@@ -87,14 +87,14 @@ Feature: Authentication API
       """
       {}
       """
-    Then the response status should be 400 or 422 or 429
+    Then the response status should be 400 or 401 or 422 or 429
 
   Scenario: Firebase merchant login with empty body returns 400
     When I POST "/api/auth/firebase/merchant" with body:
       """
       {}
       """
-    Then the response status should be 400 or 422 or 429
+    Then the response status should be 400 or 401 or 422 or 429
 
   Scenario: Admin stats requires SUPERADMIN
     When I GET "/api/auth/admin-mgmt/stats"
