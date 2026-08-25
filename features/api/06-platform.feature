@@ -45,3 +45,60 @@ Feature: Platform API
     Given I have a valid JWT token for role "ADMIN"
     When I GET "/api/platform/manage"
     Then the response status should be 403
+
+  Scenario: GET AI config requires authentication
+    When I GET "/api/platform/platform-config/ai"
+    Then the response status should be 401
+
+  Scenario: SUPERADMIN can read AI config
+    Given I have a valid JWT token for role "SUPERADMIN"
+    When I GET "/api/platform/platform-config/ai"
+    Then the response status should not be 401
+    And the response status should not be 403
+
+  Scenario: PATCH info-content requires authentication
+    When I PATCH "/api/platform/platform-config/info-content" with body:
+      """
+      {}
+      """
+    Then the response status should be 401
+
+  Scenario: SUPERADMIN can patch info-content
+    Given I have a valid JWT token for role "SUPERADMIN"
+    When I PATCH "/api/platform/platform-config/info-content" with body:
+      """
+      {}
+      """
+    Then the response status should not be 401
+    And the response status should not be 403
+
+  Scenario: AI chat requires authentication
+    When I POST "/api/platform/platform-config/ai-chat" with body:
+      """
+      { "message": "hello" }
+      """
+    Then the response status should be 401
+
+  Scenario: Admin upsert-status requires SUPERADMIN
+    Given I have a valid JWT token for role "ADMIN"
+    When I POST "/api/platform/admin/upsert-status" with body:
+      """
+      { "email": "test@example.com", "status": "active" }
+      """
+    Then the response status should be 403
+
+  Scenario: PATCH admin status requires SUPERADMIN
+    Given I have a valid JWT token for role "ADMIN"
+    When I PATCH "/api/platform/admin/00000000-0000-0000-0000-000000000000/status" with body:
+      """
+      { "status": "active" }
+      """
+    Then the response status should be 403
+
+  Scenario: PATCH admin subscription requires SUPERADMIN
+    Given I have a valid JWT token for role "ADMIN"
+    When I PATCH "/api/platform/admin/00000000-0000-0000-0000-000000000000/subscription" with body:
+      """
+      { "plan": "pro" }
+      """
+    Then the response status should be 403
