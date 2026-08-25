@@ -5,11 +5,13 @@ Feature: Catalog API
   So that I can view and manage the product catalogue
 
   Scenario: Public products list is accessible without auth
+    Given I set header "x-store-id" to "test-store"
     When I GET "/api/catalog/products"
     Then the response status should be 200
     And the response body should be a JSON array or object
 
   Scenario: Public categories list is accessible without auth
+    Given I set header "x-store-id" to "test-store"
     When I GET "/api/catalog/categories"
     Then the response status should be 200
 
