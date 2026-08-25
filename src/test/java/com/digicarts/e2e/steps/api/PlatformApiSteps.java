@@ -131,4 +131,13 @@ public class PlatformApiSteps {
                 .get("/api/admin");
         ScenarioContext.setResponse(r);
     }
+
+    @When("I request the cleanup schema")
+    public void getCleanupSchema() {
+        String token = ScenarioContext.get("authToken");
+        Response r = RestAssured.given().baseUri(BASE)
+                .header("Authorization", "Bearer " + token)
+                .get("/api/platform/cleanup/schema");
+        ScenarioContext.setResponse(r);
+    }
 }
