@@ -2,7 +2,7 @@ import { Given, When, Then } from '@cucumber/cucumber';
 import axios from 'axios';
 import assert from 'node:assert/strict';
 import { EcomWorld } from '../support/world';
-import { createApiClient, loginApi } from '../support/api-client';
+import { createApiClient, loginCached } from '../support/api-client';
 import { config } from '../support/config';
 import FormData from 'form-data';
 
@@ -30,7 +30,7 @@ Given('I have a valid JWT token for role {string}', async function (this: EcomWo
 
   if (!email || !password) throw new Error(`No credentials for role "${role}" — set E2E_${upper}_EMAIL / E2E_${upper}_PASSWORD`);
 
-  const { token } = await loginApi(email, password);
+  const token = await loginCached(email, password);
   this.token = token;
   this.api = createApiClient(token);
 });

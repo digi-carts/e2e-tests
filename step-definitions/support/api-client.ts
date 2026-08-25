@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import jwt from 'jsonwebtoken';
 import { config } from './config';
 
 export function createApiClient(token?: string): AxiosInstance {
@@ -26,10 +25,14 @@ export async function loginApi(email: string, password: string): Promise<LoginRe
   return res.data;
 }
 
-/** Mint a token locally — only usable when JWT_SECRET is set in env (CI) */
-export function mintToken(payload: { userId: string; email: string; role: string; storeId?: string }): string {
-  if (!config.jwtSecret) throw new Error('JWT_SECRET not set — cannot mint tokens');
-  return jwt.sign(payload, config.jwtSecret, { algorithm: 'HS256', expiresIn: '1h' });
+// Cache tokens for the duration of the test run — login once per email, reuse the JWT
+const _tokenCache = new Map<string, string>();
+
+export async function loginCached(email: string, password: string): Promise<string> {
+  if (_tokenCache.has(email)) return _tokenCache.get(email)!;
+  const { token } = await loginApi(email, password);
+  _tokenCache.set(email, token);
+  return token;
 }
 
 export function extractJson(res: AxiosResponse): unknown {
