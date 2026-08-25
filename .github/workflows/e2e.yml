@@ -18,10 +18,10 @@ on:
     branches: [main]
 
 env:
-  API_GATEWAY_URL: ${{ inputs.target_url || 'https://ecom-api-gateway-496160804659.us-east1.run.app' }}
-  PLATFORM_UI_URL: https://ecom-platform-ui-496160804659.us-east1.run.app
-  ADMIN_UI_URL: https://ecom-admin-ui-496160804659.us-east1.run.app
-  STOREFRONT_URL: https://ecom-storefront-496160804659.us-east1.run.app/s/iyra
+  API_GATEWAY_URL: ${{ inputs.target_url || 'https://digi-cart-api-gateway-dev-wdbieowaja-ue.a.run.app' }}
+  PLATFORM_UI_URL: https://digi-cart-platform-ui-dev-wdbieowaja-ue.a.run.app
+  ADMIN_UI_URL: https://digi-cart-merchant-ui-dev-wdbieowaja-ue.a.run.app
+  STOREFRONT_URL: https://digi-cart-storefront-dev-wdbieowaja-ue.a.run.app/s/test-store
   HEADLESS: "true"
   BROWSER: chrome
 

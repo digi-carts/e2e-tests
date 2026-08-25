@@ -46,6 +46,22 @@ Feature: Platform API
     When I GET "/api/platform/manage"
     Then the response status should be 403
 
+  Scenario: Cleanup schema requires SUPERADMIN
+    When I GET "/api/platform/cleanup/schema"
+    Then the response status should be 401
+
+  Scenario: ADMIN cannot access cleanup schema
+    Given I have a valid JWT token for role "ADMIN"
+    When I GET "/api/platform/cleanup/schema"
+    Then the response status should be 403
+
+  Scenario: SUPERADMIN can access cleanup schema
+    Given I have a valid JWT token for role "SUPERADMIN"
+    When I GET "/api/platform/cleanup/schema"
+    Then the response status should be 200
+    And the response JSON should contain "schema"
+    And the response JSON should contain "tables"
+
   Scenario: GET AI config requires authentication
     When I GET "/api/platform/platform-config/ai"
     Then the response status should be 401
