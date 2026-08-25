@@ -1,4 +1,3 @@
-import * as dotenv from 'node:fs';
 import path from 'node:path';
 
 function loadEnv() {
@@ -25,10 +24,10 @@ function env(name: string, fallback = ''): string {
 }
 
 export const config = {
-  get apiGatewayUrl() { return env('API_GATEWAY_URL', 'https://ecom-api-gateway-496160804659.us-east1.run.app'); },
-  get platformUiUrl() { return env('PLATFORM_UI_URL', 'https://ecom-platform-ui-496160804659.us-east1.run.app'); },
-  get adminUiUrl() { return env('ADMIN_UI_URL', 'https://ecom-admin-ui-496160804659.us-east1.run.app'); },
-  get storefrontUrl() { return env('STOREFRONT_URL', 'https://ecom-storefront-496160804659.us-east1.run.app/s/iyra'); },
+  get apiGatewayUrl() { return env('API_GATEWAY_URL', 'https://digi-cart-api-gateway-dev-wdbieowaja-ue.a.run.app'); },
+  get platformUiUrl() { return env('PLATFORM_UI_URL', 'https://digi-cart-platform-ui-dev-wdbieowaja-ue.a.run.app'); },
+  get adminUiUrl() { return env('ADMIN_UI_URL', 'https://digi-cart-merchant-ui-dev-wdbieowaja-ue.a.run.app'); },
+  get storefrontUrl() { return env('STOREFRONT_URL', 'https://digi-cart-storefront-dev-wdbieowaja-ue.a.run.app/s/test-store'); },
   get jwtSecret() { return env('JWT_SECRET') || env('E2E_JWT_SECRET'); },
   get browser() { return (env('BROWSER', 'chrome') || 'chrome') as 'chrome' | 'firefox' | 'edge'; },
   get headless() { return process.env.HEADLESS !== 'false'; },

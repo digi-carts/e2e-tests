@@ -11,7 +11,8 @@ export function createApiClient(token?: string): AxiosInstance {
 }
 
 export interface LoginResponse {
-  token: string;
+  accessToken: string;
+  refreshToken: string;
   user: { id: string; email: string; role: string };
 }
 
@@ -30,9 +31,9 @@ const _tokenCache = new Map<string, string>();
 
 export async function loginCached(email: string, password: string): Promise<string> {
   if (_tokenCache.has(email)) return _tokenCache.get(email)!;
-  const { token } = await loginApi(email, password);
-  _tokenCache.set(email, token);
-  return token;
+  const { accessToken } = await loginApi(email, password);
+  _tokenCache.set(email, accessToken);
+  return accessToken;
 }
 
 export function extractJson(res: AxiosResponse): unknown {
