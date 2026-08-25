@@ -43,3 +43,31 @@ Feature: Store API
     When I GET "/api/store/domain-mapping"
     Then the response status should not be 403
     And the response status should not be 401
+
+  Scenario: GET /stores/all requires authentication
+    When I GET "/api/stores/all"
+    Then the response status should be 401
+
+  Scenario: SUPERADMIN can list all stores
+    Given I have a valid JWT token for role "SUPERADMIN"
+    When I GET "/api/stores/all"
+    Then the response status should not be 401
+    And the response status should not be 403
+
+  Scenario: GET /stores/stats requires authentication
+    When I GET "/api/stores/stats"
+    Then the response status should be 401
+
+  Scenario: SUPERADMIN can get store stats
+    Given I have a valid JWT token for role "SUPERADMIN"
+    When I GET "/api/stores/stats"
+    Then the response status should not be 401
+    And the response status should not be 403
+
+  Scenario: GET /stores/by-ids requires authentication
+    When I GET "/api/stores/by-ids"
+    Then the response status should be 401
+
+  Scenario: Admin delete requires authentication
+    When I DELETE "/api/stores/admin-delete/00000000-0000-0000-0000-000000000000"
+    Then the response status should be 401
