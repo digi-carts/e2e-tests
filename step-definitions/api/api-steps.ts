@@ -2,7 +2,7 @@ import { Given, When, Then } from '@cucumber/cucumber';
 import axios from 'axios';
 import assert from 'node:assert/strict';
 import { EcomWorld } from '../support/world';
-import { createApiClient, mintToken } from '../support/api-client';
+import { createApiClient, loginApi } from '../support/api-client';
 import { config } from '../support/config';
 import FormData from 'form-data';
 
@@ -12,26 +12,32 @@ Given('I set the Authorization header to {string}', function (this: EcomWorld, h
   this.api = createApiClient(header.replace('Bearer ', ''));
 });
 
-Given('I have a valid JWT token for role {string}', function (this: EcomWorld, role: string) {
-  const token = mintToken({
-    userId: `e2e-${role.toLowerCase()}-user`,
-    email: `e2e-${role.toLowerCase()}@test.com`,
-    role,
-    storeId: role === 'ADMIN' || role === 'MERCHANT' || role === 'merchant' ? 'e2e-store-001' : undefined,
-  });
+Given('I have a valid JWT token for role {string}', async function (this: EcomWorld, role: string) {
+  const upper = role.toUpperCase();
+  let email: string;
+  let password: string;
+
+  if (upper === 'SUPERADMIN') {
+    email = config.credentials.superadmin.email;
+    password = config.credentials.superadmin.password;
+  } else if (upper === 'ADMIN' || upper === 'MERCHANT') {
+    email = config.credentials.admin.email;
+    password = config.credentials.admin.password;
+  } else {
+    email = config.credentials.user.email;
+    password = config.credentials.user.password;
+  }
+
+  if (!email || !password) throw new Error(`No credentials for role "${role}" — set E2E_${upper}_EMAIL / E2E_${upper}_PASSWORD`);
+
+  const { token } = await loginApi(email, password);
   this.token = token;
   this.api = createApiClient(token);
 });
 
-Given('I have an expired JWT token for role {string}', function (this: EcomWorld, role: string) {
-  if (!config.jwtSecret) throw new Error('JWT_SECRET not set');
-  const jwt = require('jsonwebtoken');
-  const token = jwt.sign(
-    { userId: 'expired-user', email: 'expired@test.com', role },
-    config.jwtSecret,
-    { algorithm: 'HS256', expiresIn: '-1s' }
-  );
-  this.api = createApiClient(token);
+Given('I have an expired JWT token for role {string}', function (this: EcomWorld, _role: string) {
+  // Use a syntactically-valid but wrong-secret token — gateway will reject it with 401
+  this.api = createApiClient('eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleHBpcmVkIiwiZXhwIjoxfQ.invalid-signature');
 });
 
 Given('I set header {string} to {string}', function (this: EcomWorld, headerName: string, headerValue: string) {
