@@ -40,6 +40,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Warm up Cloud Run services
+        run: |
+          curl -sf ${{ env.API_GATEWAY_URL }}/health || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/catalog/products -o /dev/null || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/orders -o /dev/null || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/shipping/config -o /dev/null || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/notifications/config -o /dev/null || true
+          sleep 8
 
       - name: Run API tests
         run: npm run test:api
