@@ -11,7 +11,7 @@ Feature: API Gateway Health
     And the response JSON should contain "service" equal to "api-gateway"
 
   Scenario: Unknown route returns 404
-    When I GET "/api/does-not-exist-xyz"
+    When I GET "/api/v1/does-not-exist-xyz"
     Then the response status should be 404
 
   Scenario: X-Powered-By header is not present

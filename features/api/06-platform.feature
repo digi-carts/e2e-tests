@@ -5,75 +5,75 @@ Feature: Platform API
   So that the platform operates correctly
 
   Scenario: Platform config is publicly readable
-    When I GET "/api/platform/platform-config"
+    When I GET "/api/v1/platform/platform-config"
     Then the response status should be 200
 
   Scenario: Templates list is publicly readable
-    When I GET "/api/platform/templates"
+    When I GET "/api/v1/platform/templates"
     Then the response status should be 200
 
   Scenario: Admin settings require SUPERADMIN
-    When I GET "/api/platform/platform-config/admin-settings"
+    When I GET "/api/v1/platform/platform-config/admin-settings"
     Then the response status should be 401
 
   Scenario: ADMIN cannot access admin-settings
     Given I have a valid JWT token for role "ADMIN"
-    When I GET "/api/platform/platform-config/admin-settings"
+    When I GET "/api/v1/platform/platform-config/admin-settings"
     Then the response status should be 403
 
   Scenario: Services status requires SUPERADMIN
-    When I GET "/api/platform/services/status"
+    When I GET "/api/v1/platform/services/status"
     Then the response status should be 401
 
   Scenario: Subscription status requires ADMIN
-    When I GET "/api/platform/subscription-status"
+    When I GET "/api/v1/platform/subscription-status"
     Then the response status should be 401
 
   Scenario: ADMIN can view subscription status
     Given I have a valid JWT token for role "ADMIN"
-    When I GET "/api/platform/subscription-status"
+    When I GET "/api/v1/platform/subscription-status"
     Then the response status should not be 401
     And the response status should not be 403
 
   Scenario: Subscriptions list accessible by ADMIN
     Given I have a valid JWT token for role "ADMIN"
-    When I GET "/api/platform/subscriptions"
+    When I GET "/api/v1/platform/subscriptions"
     Then the response status should not be 401
     And the response status should not be 403
 
   Scenario: Platform manage requires SUPERADMIN
     Given I have a valid JWT token for role "ADMIN"
-    When I GET "/api/platform/manage"
+    When I GET "/api/v1/platform/manage"
     Then the response status should be 403
 
   Scenario: Cleanup schema requires SUPERADMIN
-    When I GET "/api/platform/cleanup/schema"
+    When I GET "/api/v1/platform/cleanup/schema"
     Then the response status should be 401
 
   Scenario: ADMIN cannot access cleanup schema
     Given I have a valid JWT token for role "ADMIN"
-    When I GET "/api/platform/cleanup/schema"
+    When I GET "/api/v1/platform/cleanup/schema"
     Then the response status should be 403
 
   Scenario: SUPERADMIN can access cleanup schema
     Given I have a valid JWT token for role "SUPERADMIN"
-    When I GET "/api/platform/cleanup/schema"
+    When I GET "/api/v1/platform/cleanup/schema"
     Then the response status should be 200
     And the response JSON should contain "schema"
     And the response JSON should contain "tables"
 
   Scenario: GET AI config requires authentication
-    When I GET "/api/platform/platform-config/ai"
+    When I GET "/api/v1/platform/platform-config/ai"
     Then the response status should be 401
 
   Scenario: SUPERADMIN can read AI config
     Given I have a valid JWT token for role "SUPERADMIN"
-    When I GET "/api/platform/platform-config/ai"
+    When I GET "/api/v1/platform/platform-config/ai"
     Then the response status should not be 401
     And the response status should not be 403
 
   Scenario: PATCH info-content requires authentication
-    When I PATCH "/api/platform/platform-config/info-content" with body:
+    When I PATCH "/api/v1/platform/platform-config/info-content" with body:
       """
       {}
       """
@@ -81,7 +81,7 @@ Feature: Platform API
 
   Scenario: SUPERADMIN can patch info-content
     Given I have a valid JWT token for role "SUPERADMIN"
-    When I PATCH "/api/platform/platform-config/info-content" with body:
+    When I PATCH "/api/v1/platform/platform-config/info-content" with body:
       """
       {}
       """
@@ -89,15 +89,24 @@ Feature: Platform API
     And the response status should not be 403
 
   Scenario: AI chat requires authentication
-    When I POST "/api/platform/platform-config/ai-chat" with body:
+    When I POST "/api/v1/platform/platform-config/ai-chat" with body:
       """
       { "message": "hello" }
       """
     Then the response status should be 401
 
+  Scenario: GET admin list requires authentication
+    When I GET "/api/v1/platform/admin"
+    Then the response status should be 401
+
+  Scenario: SUPERADMIN can list admin users
+    Given I have a valid JWT token for role "SUPERADMIN"
+    When I GET "/api/v1/platform/admin"
+    Then the response status should be 200
+
   Scenario: Admin upsert-status requires SUPERADMIN
     Given I have a valid JWT token for role "ADMIN"
-    When I POST "/api/platform/admin/upsert-status" with body:
+    When I POST "/api/v1/platform/admin/upsert-status" with body:
       """
       { "email": "test@example.com", "status": "active" }
       """
@@ -105,7 +114,7 @@ Feature: Platform API
 
   Scenario: PATCH admin status requires SUPERADMIN
     Given I have a valid JWT token for role "ADMIN"
-    When I PATCH "/api/platform/admin/00000000-0000-0000-0000-000000000000/status" with body:
+    When I PATCH "/api/v1/platform/admin/00000000-0000-0000-0000-000000000000/status" with body:
       """
       { "status": "active" }
       """
@@ -113,7 +122,7 @@ Feature: Platform API
 
   Scenario: PATCH admin subscription requires SUPERADMIN
     Given I have a valid JWT token for role "ADMIN"
-    When I PATCH "/api/platform/admin/00000000-0000-0000-0000-000000000000/subscription" with body:
+    When I PATCH "/api/v1/platform/admin/00000000-0000-0000-0000-000000000000/subscription" with body:
       """
       { "plan": "pro" }
       """
