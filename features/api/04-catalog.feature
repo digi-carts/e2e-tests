@@ -21,6 +21,7 @@ Feature: Catalog API
 
   Scenario: ADMIN can access stock summary
     Given I have a valid JWT token for role "ADMIN"
+    And I set header "x-store-id" to "test-store"
     When I GET "/api/v1/catalog/products/stock-summary"
     Then the response status should not be 401
     And the response status should not be 403
@@ -28,15 +29,16 @@ Feature: Catalog API
   Scenario: Creating a product requires ADMIN auth
     When I POST "/api/v1/catalog/products" with body:
       """
-      { "name": "Test Product", "price": 99.99, "storeId": "store-1" }
+      { "name": "Test Product", "price": 99.99, "stock": 0 }
       """
     Then the response status should be 401
 
   Scenario: ADMIN can create a product
     Given I have a valid JWT token for role "ADMIN"
+    And I set header "x-store-id" to "test-store"
     When I POST "/api/v1/catalog/products" with body:
       """
-      { "name": "E2E Test Product", "price": 10, "storeId": "test-store" }
+      { "name": "E2E Test Product", "price": 10, "stock": 0 }
       """
     Then the response status should not be 401
     And the response status should not be 403
