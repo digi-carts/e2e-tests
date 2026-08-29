@@ -6,17 +6,10 @@ import { createApiClient, loginCached } from '../support/api-client';
 import { config } from '../support/config';
 import FormData from 'form-data';
 
-// ─── Auth setup steps ─────────────────────────────────────────────────────────
-
-Given('I set the Authorization header to {string}', function (this: EcomWorld, header: string) {
-  this.api = createApiClient(header.replace('Bearer ', ''));
-});
-
-Given('I have a valid JWT token for role {string}', async function (this: EcomWorld, role: string) {
+function credentialsForRole(role: string): { email: string; password: string } {
   const upper = role.toUpperCase();
   let email: string;
   let password: string;
-
   if (upper === 'SUPERADMIN') {
     email = config.credentials.superadmin.email;
     password = config.credentials.superadmin.password;
@@ -27,9 +20,29 @@ Given('I have a valid JWT token for role {string}', async function (this: EcomWo
     email = config.credentials.user.email;
     password = config.credentials.user.password;
   }
+  if (!email || !password) {
+    throw new Error(`No credentials for role "${role}" — set E2E_${upper}_EMAIL / E2E_${upper}_PASSWORD`);
+  }
+  return { email, password };
+}
 
-  if (!email || !password) throw new Error(`No credentials for role "${role}" — set E2E_${upper}_EMAIL / E2E_${upper}_PASSWORD`);
+function nestedValue(data: unknown, path: string): unknown {
+  return path.split('.').reduce<unknown>((acc, key) => {
+    if (acc && typeof acc === 'object' && key in (acc as Record<string, unknown>)) {
+      return (acc as Record<string, unknown>)[key];
+    }
+    return undefined;
+  }, data);
+}
 
+// ─── Auth setup steps ─────────────────────────────────────────────────────────
+
+Given('I set the Authorization header to {string}', function (this: EcomWorld, header: string) {
+  this.api = createApiClient(header.replace('Bearer ', ''));
+});
+
+Given('I have a valid JWT token for role {string}', async function (this: EcomWorld, role: string) {
+  const { email, password } = credentialsForRole(role);
   const token = await loginCached(email, password);
   this.token = token;
   this.api = createApiClient(token);
@@ -94,6 +107,33 @@ When('I POST a multipart file with content type {string} to {string}', async fun
   });
 });
 
+When('I log in as {string} via the login API', async function (this: EcomWorld, role: string) {
+  const { email, password } = credentialsForRole(role);
+  this.lastResponse = await this.api.post('/api/v1/auth/login', { email, password }, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const data = this.lastResponse.data as { accessToken?: string; refreshToken?: string };
+  if (data.accessToken) {
+    this.token = data.accessToken;
+    this.context.refreshToken = data.refreshToken;
+    this.api = createApiClient(data.accessToken);
+  }
+});
+
+When('I POST refresh using the last refresh token', async function (this: EcomWorld) {
+  const refreshToken = this.context.refreshToken;
+  assert.ok(typeof refreshToken === 'string' && refreshToken, 'No refresh token stored from the last login');
+  this.lastResponse = await createApiClient().post('/api/v1/auth/refresh', { refreshToken }, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+});
+
+When('I POST refresh using an invalid refresh token', async function (this: EcomWorld) {
+  this.lastResponse = await this.api.post('/api/v1/auth/refresh', { refreshToken: 'not-a-valid-refresh-token' }, {
+    headers: { 'Content-Type': 'application/json' },
+  });
+});
+
 // ─── Assertion steps ──────────────────────────────────────────────────────────
 
 Then('the response status should be {int}', function (this: EcomWorld, expectedStatus: number) {
@@ -150,6 +190,19 @@ Then('the response JSON should contain {string} equal to {string}', function (th
   assert.ok(this.lastResponse, 'No response recorded');
   const data = this.lastResponse.data as Record<string, unknown>;
   assert.equal(data[key], value, `Expected ${key}="${value}" but got ${JSON.stringify(data[key])}`);
+});
+
+Then('the nested JSON {string} should be {string}', function (this: EcomWorld, path: string, value: string) {
+  assert.ok(this.lastResponse, 'No response recorded');
+  const actual = nestedValue(this.lastResponse.data, path);
+  assert.equal(String(actual), value, `Expected ${path}="${value}" but got ${JSON.stringify(actual)}`);
+});
+
+Then('the JSON field {string} should be a non-empty string', function (this: EcomWorld, key: string) {
+  assert.ok(this.lastResponse, 'No response recorded');
+  const data = this.lastResponse.data as Record<string, unknown>;
+  assert.equal(typeof data[key], 'string', `Expected ${key} to be a string. Body: ${JSON.stringify(data)}`);
+  assert.ok(String(data[key]).length > 0, `Expected ${key} to be non-empty`);
 });
 
 Then('the response header {string} should not be present', function (this: EcomWorld, headerName: string) {
