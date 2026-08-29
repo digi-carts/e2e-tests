@@ -18,7 +18,7 @@ export interface LoginResponse {
 
 export async function loginApi(email: string, password: string): Promise<LoginResponse> {
   const res = await axios.post<LoginResponse>(
-    `${config.apiGatewayUrl}/api/auth/login`,
+    `${config.apiGatewayUrl}/api/v1/auth/login`,
     { email, password },
     { timeout: 15_000, validateStatus: () => true }
   );
