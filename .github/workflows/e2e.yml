@@ -43,14 +43,17 @@ jobs:
       - name: Warm up Cloud Run services
         run: |
           curl -sf ${{ env.API_GATEWAY_URL }}/health || true
-          curl -sfX POST ${{ env.API_GATEWAY_URL }}/api/auth/login -H 'Content-Type: application/json' -d '{"email":"x","password":"x"}' -o /dev/null || true
+          WARMUP_TOKEN=$(curl -sf -X POST ${{ env.API_GATEWAY_URL }}/api/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"${{ secrets.E2E_SUPERADMIN_EMAIL }}","password":"${{ secrets.E2E_SUPERADMIN_PASSWORD }}"}' \
+            | jq -r '.accessToken // ""' 2>/dev/null || echo "")
           curl -sf ${{ env.API_GATEWAY_URL }}/api/catalog/products -o /dev/null || true
           curl -sf ${{ env.API_GATEWAY_URL }}/api/platform/platform-config -o /dev/null || true
           curl -sf ${{ env.API_GATEWAY_URL }}/api/platform/templates -o /dev/null || true
-          curl -sf ${{ env.API_GATEWAY_URL }}/api/orders -o /dev/null || true
-          curl -sf ${{ env.API_GATEWAY_URL }}/api/store -o /dev/null || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/orders -H "Authorization: Bearer $WARMUP_TOKEN" -o /dev/null || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/store -H "Authorization: Bearer $WARMUP_TOKEN" -o /dev/null || true
           curl -sf ${{ env.API_GATEWAY_URL }}/api/shipping/rates -o /dev/null || true
-          curl -sf ${{ env.API_GATEWAY_URL }}/api/notifications/config -o /dev/null || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/notifications/config -H "Authorization: Bearer $WARMUP_TOKEN" -o /dev/null || true
           sleep 20
 
       - name: Run API tests
@@ -188,9 +191,12 @@ jobs:
       - name: Warm up Cloud Run services
         run: |
           curl -sf ${{ env.API_GATEWAY_URL }}/health || true
-          curl -sfX POST ${{ env.API_GATEWAY_URL }}/api/auth/login -H 'Content-Type: application/json' -d '{"email":"x","password":"x"}' -o /dev/null || true
+          WARMUP_TOKEN=$(curl -sf -X POST ${{ env.API_GATEWAY_URL }}/api/auth/login \
+            -H 'Content-Type: application/json' \
+            -d '{"email":"${{ secrets.E2E_SUPERADMIN_EMAIL }}","password":"${{ secrets.E2E_SUPERADMIN_PASSWORD }}"}' \
+            | jq -r '.accessToken // ""' 2>/dev/null || echo "")
           curl -sf ${{ env.API_GATEWAY_URL }}/api/platform/platform-config -o /dev/null || true
-          curl -sf ${{ env.API_GATEWAY_URL }}/api/store -o /dev/null || true
+          curl -sf ${{ env.API_GATEWAY_URL }}/api/store -H "Authorization: Bearer $WARMUP_TOKEN" -o /dev/null || true
           curl -sf ${{ env.PLATFORM_UI_URL }} -o /dev/null || true
           curl -sf ${{ env.ADMIN_UI_URL }} -o /dev/null || true
           curl -sf ${{ env.STOREFRONT_URL }} -o /dev/null || true
