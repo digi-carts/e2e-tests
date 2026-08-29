@@ -17,7 +17,8 @@ export async function getDriver(): Promise<WebDriver> {
     }
     default: {
       const opts = new chrome.Options();
-      if (config.headless) opts.addArguments('--headless=new', '--no-sandbox', '--disable-dev-shm-usage');
+      if (config.headless) opts.addArguments('--headless=new', '--no-sandbox', '--disable-dev-shm-usage', '--window-size=1280,800');
+      else opts.addArguments('--window-size=1280,800');
       driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(opts).build();
     }
   }

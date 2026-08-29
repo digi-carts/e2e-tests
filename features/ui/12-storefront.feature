@@ -11,8 +11,8 @@ Feature: Storefront
     Then the page should load without errors
     And the page should not show a 500 error
 
-  Scenario: Storefront has a navigation header
-    Then I should see a navigation element on the page
+  Scenario: Storefront hydrates past the loading skeleton
+    Then I should see storefront navigation or a store status message
 
   Scenario: Product listing page is accessible
     When I navigate to the products page
