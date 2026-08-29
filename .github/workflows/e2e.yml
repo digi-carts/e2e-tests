@@ -68,36 +68,7 @@ jobs:
 
       - name: Write API test summary
         if: always()
-        run: |
-          if [ -f reports/cucumber-report.json ]; then
-            node -e "
-              const fs = require('fs');
-              const data = JSON.parse(fs.readFileSync('reports/cucumber-report.json', 'utf8'));
-              let pass = 0, fail = 0, skip = 0;
-              data.forEach(f => f.elements && f.elements.forEach(s => {
-                const steps = s.steps || [];
-                if (steps.some(st => st.result && st.result.status === 'failed')) fail++;
-                else if (steps.every(st => st.result && st.result.status === 'passed')) pass++;
-                else skip++;
-              }));
-              const total = pass + fail + skip;
-              const icon = fail === 0 ? '✅' : '❌';
-              const lines = [
-                '## \${icon} API Test Results',
-                '| Passed | Failed | Skipped | Total |',
-                '|--------|--------|---------|-------|',
-                '| \${pass} | \${fail} | \${skip} | \${total} |',
-              ];
-              if (fail > 0) {
-                lines.push('', '### Failed Scenarios');
-                data.forEach(f => f.elements && f.elements.forEach(s => {
-                  if ((s.steps || []).some(st => st.result && st.result.status === 'failed'))
-                    lines.push('- **' + f.name + '** › ' + s.name);
-                }));
-              }
-              fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n') + '\n');
-            "
-          fi
+        run: node scripts/write-step-summary.js "API Test Results"
 
       - name: Upload API test report
         if: always()
@@ -149,6 +120,10 @@ jobs:
           E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
+
+      - name: Write UI test summary
+        if: always()
+        run: node scripts/write-step-summary.js "UI Test Results"
 
       - name: Upload UI screenshots on failure
         if: failure()
@@ -212,10 +187,13 @@ jobs:
           E2E_USER_EMAIL: ${{ secrets.E2E_USER_EMAIL }}
           E2E_USER_PASSWORD: ${{ secrets.E2E_USER_PASSWORD }}
 
+      - name: Write smoke test summary
+        if: always()
+        run: node scripts/write-step-summary.js "Smoke Test Results"
+
       - name: Generate HTML report
         if: always()
-        run: |
-          npm run test:report || true
+        run: node scripts/generate-report.js || true
 
       - name: Upload smoke test report
         if: always()
