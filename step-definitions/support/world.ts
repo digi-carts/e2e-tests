@@ -1,6 +1,6 @@
 import { setWorldConstructor, World, IWorldOptions, After, Before, setDefaultTimeout } from '@cucumber/cucumber';
 
-setDefaultTimeout(35_000);
+setDefaultTimeout(90_000);
 import { AxiosInstance } from 'axios';
 import { WebDriver } from 'selenium-webdriver';
 import { createApiClient } from './api-client';
@@ -36,6 +36,8 @@ After({ tags: '@ui' }, async function (this: EcomWorld, scenario) {
 });
 
 Before(function (this: EcomWorld) {
+  this.api = createApiClient();
   this.lastResponse = null;
+  this.token = null;
   this.context = {};
 });

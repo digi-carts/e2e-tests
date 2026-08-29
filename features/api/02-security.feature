@@ -23,7 +23,7 @@ Feature: API Gateway Security
     Given I have a valid JWT token for role "USER"
     When I POST "/api/v1/catalog/products" with body:
       """
-      { "name": "Hack", "price": 1 }
+      { "name": "Hack", "price": 1, "stock": 0 }
       """
     Then the response status should be 403
 

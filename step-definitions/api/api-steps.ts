@@ -41,12 +41,7 @@ Given('I have an expired JWT token for role {string}', function (this: EcomWorld
 });
 
 Given('I set header {string} to {string}', function (this: EcomWorld, headerName: string, headerValue: string) {
-  this.api = axios.create({
-    baseURL: config.apiGatewayUrl,
-    timeout: 15_000,
-    headers: { [headerName]: headerValue },
-    validateStatus: () => true,
-  });
+  this.api.defaults.headers.common[headerName] = headerValue;
 });
 
 // ─── Request steps ────────────────────────────────────────────────────────────
@@ -92,10 +87,10 @@ When('I POST a multipart file to {string}', async function (this: EcomWorld, pat
 
 When('I POST a multipart file with content type {string} to {string}', async function (this: EcomWorld, mimeType: string, path: string) {
   const form = new FormData();
-  const fieldName = path.includes('/catalog/') ? 'image' : 'file';
-  form.append(fieldName, Buffer.from('fake-content'), { filename: 'test.txt', contentType: mimeType });
+  form.append('file', Buffer.from('fake-content'), { filename: 'test.txt', contentType: mimeType });
   this.lastResponse = await this.api.post(path, form, {
     headers: form.getHeaders(),
+    maxBodyLength: Infinity,
   });
 });
 
