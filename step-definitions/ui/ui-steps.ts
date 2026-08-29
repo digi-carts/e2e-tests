@@ -22,8 +22,10 @@ Given('I open the storefront', async function (this: EcomWorld) {
 When('I navigate to the products page', async function (this: EcomWorld) {
   const d = await getDriver();
   const currentUrl = await d.getCurrentUrl();
-  const base = new URL(currentUrl).origin;
-  await d.get(`${base}/products`);
+  const u = new URL(currentUrl);
+  const storeMatch = u.pathname.match(/^(\/s\/[^/]+)/);
+  const productsPath = storeMatch ? `${storeMatch[1]}/products` : '/products';
+  await d.get(`${u.origin}${productsPath}`);
 });
 
 // ─── Page assertions ──────────────────────────────────────────────────────────
@@ -92,6 +94,16 @@ Then('I should see a navigation element on the page', async function (this: Ecom
     'Navigation element not found'
   );
   assert.ok(await nav.isDisplayed(), 'Navigation element is not visible');
+});
+
+Then('I should see storefront navigation or a store status message', async function (this: EcomWorld) {
+  const d = await getDriver();
+  await d.wait(async () => {
+    const source = await d.getPageSource();
+    const hydratedNav = /<(nav|header)\b/i.test(source) || /role=["']navigation["']/i.test(source);
+    const storeStatus = /Store not found|Store temporarily unavailable/i.test(source);
+    return hydratedNav || storeStatus;
+  }, 25_000, 'Storefront did not show navigation or a store status message');
 });
 
 Then('I should see an error message on the page', async function (this: EcomWorld) {
