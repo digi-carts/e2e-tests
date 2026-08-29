@@ -59,8 +59,8 @@ Feature: Platform API
     Given I have a valid JWT token for role "SUPERADMIN"
     When I GET "/api/v1/platform/cleanup/schema"
     Then the response status should be 200
-    And the response JSON should contain "schema"
-    And the response JSON should contain "tables"
+    And the response JSON should contain "tree"
+    And the response JSON should contain "pks"
 
   Scenario: GET AI config requires authentication
     When I GET "/api/v1/platform/platform-config/ai"
