@@ -72,3 +72,14 @@ Feature: Platform UI login APIs
     And the response JSON should contain "customers"
     And the response JSON should contain "subscriptions"
     And the response JSON should contain "supportTickets"
+    And the nested JSON "customers.total" should be a number
+    And the nested JSON "customers.active" should be a number
+    And the nested JSON "customers.inactive" should be a number
+    And the nested JSON "stores.total" should be a number
+    And the nested JSON "stores.published" should be a number
+    And the nested JSON "stores.expired" should be a number
+    And the nested JSON "orders.total" should be a number
+    And the nested JSON "subscriptions.total" should be a number
+    And the nested JSON "supportTickets.total" should be a number
+    And the nested JSON "supportTickets.pending" should be a number
+    And the nested JSON "admins.total" should be a number

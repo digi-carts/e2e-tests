@@ -147,6 +147,45 @@ Then('I should see the dashboard heading', async function (this: EcomWorld) {
   assert.ok(await heading.isDisplayed(), 'Dashboard heading is not visible');
 });
 
+Then('I should see the heading {string}', async function (this: EcomWorld, text: string) {
+  const d = await getDriver();
+  const heading = await d.wait(
+    until.elementLocated(By.xpath(`//h1[contains(normalize-space(.), "${text}")] | //h2[contains(normalize-space(.), "${text}")]`)),
+    30_000,
+    `Heading "${text}" not found`
+  );
+  assert.ok(await heading.isDisplayed(), `Heading "${text}" is not visible`);
+});
+
+Then('I should see the text {string}', async function (this: EcomWorld, text: string) {
+  const d = await getDriver();
+  await d.wait(async () => {
+    const source = await d.getPageSource();
+    return source.includes(text);
+  }, 25_000, `Page did not contain text "${text}"`);
+});
+
+Then('I should see these dashboard stats with numeric values:', async function (this: EcomWorld, table) {
+  const d = await getDriver();
+  await d.wait(until.elementLocated(By.css('main [data-slot="card"]')), 30_000, 'Dashboard stat cards not found');
+
+  const labels = (table.raw() as string[][]).map((row) => row[0]).filter(Boolean);
+  for (const label of labels) {
+    await d.wait(async () => {
+      const cards = await d.findElements(By.css('main [data-slot="card"]'));
+      for (const card of cards) {
+        const cardText = await card.getText();
+        if (!cardText.includes(label)) continue;
+        const valueEls = await card.findElements(By.css('p.text-3xl, p.font-bold'));
+        if (!valueEls.length) continue;
+        const value = (await valueEls[0].getText()).trim().replace(/,/g, '');
+        if (/^\d+(\.\d+)?$/.test(value)) return true;
+      }
+      return false;
+    }, 30_000, `Dashboard card "${label}" did not show a numeric value`);
+  }
+});
+
 Then('I should see the store management heading', async function (this: EcomWorld) {
   const d = await getDriver();
   await d.wait(

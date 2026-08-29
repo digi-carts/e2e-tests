@@ -192,10 +192,11 @@ Then('the response JSON should contain {string} equal to {string}', function (th
   assert.equal(data[key], value, `Expected ${key}="${value}" but got ${JSON.stringify(data[key])}`);
 });
 
-Then('the nested JSON {string} should be {string}', function (this: EcomWorld, path: string, value: string) {
+Then('the nested JSON {string} should be a number', function (this: EcomWorld, path: string) {
   assert.ok(this.lastResponse, 'No response recorded');
   const actual = nestedValue(this.lastResponse.data, path);
-  assert.equal(String(actual), value, `Expected ${path}="${value}" but got ${JSON.stringify(actual)}`);
+  assert.equal(typeof actual, 'number', `Expected ${path} to be a number but got ${JSON.stringify(actual)}`);
+  assert.ok(Number.isFinite(actual as number), `Expected ${path} to be finite, got ${String(actual)}`);
 });
 
 Then('the JSON field {string} should be a non-empty string', function (this: EcomWorld, key: string) {
