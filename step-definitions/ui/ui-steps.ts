@@ -19,6 +19,13 @@ Given('I open the storefront', async function (this: EcomWorld) {
   await navigateTo(config.storefrontUrl);
 });
 
+When('I open the platform path {string}', async function (this: EcomWorld, path: string) {
+  const d = await getDriver();
+  const currentUrl = await d.getCurrentUrl();
+  const origin = new URL(currentUrl).origin;
+  await d.get(`${origin}${path}`);
+});
+
 When('I navigate to the products page', async function (this: EcomWorld) {
   const d = await getDriver();
   const currentUrl = await d.getCurrentUrl();

@@ -75,6 +75,12 @@ When('I PATCH {string} with body:', async function (this: EcomWorld, path: strin
   });
 });
 
+When('I PUT {string} with body:', async function (this: EcomWorld, path: string, body: string) {
+  this.lastResponse = await this.api.put(path, JSON.parse(body), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+});
+
 When('I DELETE {string}', async function (this: EcomWorld, path: string) {
   this.lastResponse = await this.api.delete(path);
 });
