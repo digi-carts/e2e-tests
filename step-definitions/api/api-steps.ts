@@ -198,6 +198,12 @@ Then('the response JSON should contain {string} equal to {string}', function (th
   assert.equal(data[key], value, `Expected ${key}="${value}" but got ${JSON.stringify(data[key])}`);
 });
 
+Then('the nested JSON {string} should be {string}', function (this: EcomWorld, path: string, value: string) {
+  assert.ok(this.lastResponse, 'No response recorded');
+  const actual = nestedValue(this.lastResponse.data, path);
+  assert.equal(String(actual), value, `Expected ${path}="${value}" but got ${JSON.stringify(actual)}`);
+});
+
 Then('the nested JSON {string} should be a number', function (this: EcomWorld, path: string) {
   assert.ok(this.lastResponse, 'No response recorded');
   const actual = nestedValue(this.lastResponse.data, path);
