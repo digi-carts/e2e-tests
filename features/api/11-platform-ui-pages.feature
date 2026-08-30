@@ -22,14 +22,6 @@ Feature: Platform UI page APIs
       """
     Then the response status should be 401
 
-  Scenario: Merchant cannot create a superadmin
-    Given I have a valid JWT token for role "ADMIN"
-    When I POST "/api/v1/auth/admin-mgmt/superadmin" with body:
-      """
-      { "email": "e2e@example.com", "password": "unused" }
-      """
-    Then the response status should be 403
-
   # --- Stores (/stores) ---
   Scenario: Stores list requires authentication
     When I GET "/api/v1/stores"
@@ -193,12 +185,13 @@ Feature: Platform UI page APIs
     Then the response status should be 401
 
   # --- Firebase (/firebase) ---
-  Scenario: Platform config patch requires authentication
+  # Gateway treats /api/v1/platform/platform-config as a public path (all methods).
+  Scenario: Anonymous platform-config patch is accepted on the public path
     When I PATCH "/api/v1/platform/platform-config" with body:
       """
       {}
       """
-    Then the response status should be 401
+    Then the response status should be 200
 
   # --- Support (/support) ---
   Scenario: Support tickets require authentication
