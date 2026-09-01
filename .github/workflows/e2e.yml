@@ -19,8 +19,8 @@ on:
 
 env:
   API_GATEWAY_URL: ${{ inputs.target_url || 'https://digi-cart-api-gateway-dev-wdbieowaja-ue.a.run.app' }}
-  PLATFORM_UI_URL: https://admin-dev.digi-carts.com
-  ADMIN_UI_URL: https://digi-cart-merchant-ui-dev-wdbieowaja-ue.a.run.app
+  PLATFORM_UI_URL: https://digi-cart-platform-ui-dev-wdbieowaja-ue.a.run.app
+  ADMIN_UI_URL: https://admin-dev.digi-carts.com
   STOREFRONT_URL: https://digi-cart-storefront-dev-wdbieowaja-ue.a.run.app/s/test-store
   HEADLESS: "true"
   BROWSER: chrome
